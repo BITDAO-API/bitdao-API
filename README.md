@@ -68,11 +68,11 @@
 
 ##create asynchronous rest
 
-   HibtcApiClientFactory fc = HibtcApiClientFactory.newInstance();
+    HibtcApiClientFactory fc = HibtcApiClientFactory.newInstance();
    
-   HibtcApiAsynRestClient client = fc.newRestAsynClient(service);
+    HibtcApiAsynRestClient client = fc.newRestAsynClient(service);
    
 ##get information
 
-   example:re.getTicker("ETH_BTC", response -> System.out.println(response+"***1"));
+    example:re.getTicker("ETH_BTC", response -> System.out.println(response+"***1"));
 
