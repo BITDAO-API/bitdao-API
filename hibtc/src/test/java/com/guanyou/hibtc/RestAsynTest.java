@@ -16,10 +16,10 @@ public class RestAsynTest {
     public static void main(String[] args) {
         HibtcApiClientFactory fc = HibtcApiClientFactory.newInstance();
         AuthInfo authInfo = new AuthInfo();
-        authInfo.setApi_key("NDM2MjU5OTY2NDI1ODcyODA4OzE1MjQwNTQzNzkwMDA7MTUyNTc3NTIyMzAzMzszNjY4OTtiMDk1OGJhMWU1NjkwNTlmNTEyY2Q4ZjNkNTE0ZWVjZg==");
+        authInfo.setApi_key("your api key");
         authInfo.setAuth_key("12345");
         authInfo.setAuth_nonce(String.valueOf(System.currentTimeMillis()));
-        authInfo.setApiSecret("NDM2MjU5OTY2NDI1ODcyODA4OzE1MjQwNTQzNzkwMDA7MTUyNTc3NTIxNjkxODszMDU3NDsxNDNhYzA5MzMxOGEwZGRkNWQyNjliMDQ3Yzk3MmVlZg==");
+        authInfo.setApiSecret("your api secret");
 
         HibtcApiServiceGenerator hi = new HibtcApiServiceGenerator("https://api.hibtc.com");
         HibtcApiAsynRestClient re = fc.newRestAsynClient(hi);
