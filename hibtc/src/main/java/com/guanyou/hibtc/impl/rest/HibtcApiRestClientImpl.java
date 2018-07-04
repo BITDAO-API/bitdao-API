@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.guanyou.hibtc.constant.HibtcApiConstants;
 import com.guanyou.hibtc.domain.Event.*;
+import com.guanyou.hibtc.domain.account.AuthInfo;
 import com.guanyou.hibtc.domain.bb.OrderResponse;
 import com.guanyou.hibtc.impl.build.BuildJSON;
 import com.guanyou.hibtc.rest.HibtcApiRestClient;
-import com.guanyou.hibtc.domain.account.AuthInfo;
 import com.guanyou.hibtc.until.MD5coding;
 
 import java.util.List;
-
-
 
 
 /**
@@ -21,22 +19,23 @@ import java.util.List;
 public class HibtcApiRestClientImpl implements HibtcApiRestClient {
 
     private final com.guanyou.hibtc.impl.rest.HibtcApiService HibtcApiService;
-   private HibtcApiServiceGenerator service;
+    private HibtcApiServiceGenerator service;
+
     public HibtcApiRestClientImpl(HibtcApiServiceGenerator hibtcApiServiceGenerator) {
-        this.service= hibtcApiServiceGenerator;
+        this.service = hibtcApiServiceGenerator;
         HibtcApiService = hibtcApiServiceGenerator.createService(HibtcApiService.class);
     }
 
-    private  BuildJSON buildJSON = new BuildJSON();
+    private BuildJSON buildJSON = new BuildJSON();
 
     @Override
     public EventTicker getTicker(String pair) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getTicker(pair)));//EventTicker.class
-        EventTicker eventTicker =JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventTicker.class);
+        EventTicker eventTicker = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventTicker.class);
         return eventTicker;
 
     }
-    
+
     @Override
     public EventDepth getOrderBook(String pair, int depth, int prec) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOrderBook(pair, depth, prec)));
@@ -51,10 +50,9 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildKline(dataArray);
         data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventKLine eventKLine =JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventKLine.class);
+        EventKLine eventKLine = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventKLine.class);
         return eventKLine;
     }
-
 
 
     @Override
@@ -69,7 +67,6 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
     }
 
 
-
     @Override
     public CancleOrderResponse cancleOrder(AuthInfo authInfo, String pair, String order_id) {
         String api_key = authInfo.getApi_key();
@@ -79,7 +76,7 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.cancleOrder(api_key, auth_nonce, auth_key, auth_sign, pair, order_id)));
         CancleOrderResponse orderResponse = JSONObject.parseObject(js.toJSONString(), CancleOrderResponse.class);
-        return orderResponse ;
+        return orderResponse;
 
     }
 
@@ -95,7 +92,7 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildOrder(dataArray);
         data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventOrder eventOrder =JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventOrder.class);
+        EventOrder eventOrder = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventOrder.class);
         return eventOrder;
     }
 
@@ -200,12 +197,11 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
     public OrderResponse getOrder(AuthInfo authInfo, String pair, String type, String order_type, String price, String amount, String money, String stop_price) {
         String api_key = authInfo.getApi_key();
         String auth_nonce = authInfo.getAuth_nonce();
-        String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
-        JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOrder(api_key, auth_nonce, auth_key, auth_sign, pair, type, order_type, price, amount, money, stop_price)));
+        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + type + order_type + price + amount + money + stop_price + apiSecret);
+        JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, type, order_type, price, amount, money, stop_price)));
         OrderResponse orderResponse = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), OrderResponse.class);
-        return orderResponse ;
+        return orderResponse;
     }
 
 

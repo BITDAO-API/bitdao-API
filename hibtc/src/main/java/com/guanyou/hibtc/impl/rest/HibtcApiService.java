@@ -1,8 +1,7 @@
 package com.guanyou.hibtc.impl.rest;
 
-import com.guanyou.hibtc.domain.Event.*;
-import com.guanyou.hibtc.domain.bb.OrderResponse;
 import retrofit2.Call;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -11,22 +10,22 @@ import retrofit2.http.Query;
  */
 public interface HibtcApiService {
 
-    @POST("bb/api/ticker")
+    @GET("bb/api/ticker")
     Call<Object> getTicker(@Query("pair") String pair);
 
-    @POST("bb/api/depth")
+    @GET("bb/api/depth")
     Call<Object> getOrderBook(@Query("pair") String pair, @Query("depth") int depth, @Query("prec") int prec);
 
-    @POST("bb/api/kline")
+    @GET("bb/api/kline")
     Call<Object> getKLine(@Query("pair") String pair, @Query("type") String type, @Query("time_start") long time_start, @Query("time_end") long time_end);
 
-    @POST("bb/api/trades")
+    @GET("bb/api/trades")
     Call<Object> getTrade(@Query("pair") String pair, @Query("last") int last);
 
     @POST("bb/api/make/order")
-    Call<Object> getOrder(@Query("api_key") String api_key, @Query("auth_nonce") String auth_nonce, @Query("auth_key") String auth_key, @Query("auth_sign") String auth_sign,
-                                 @Query("pair") String pair, @Query("type") String type, @Query("order_type") String order_type, @Query("price") String price,
-                                 @Query("amount") String amount, @Query("money") String money, @Query("stop_price") String stop_price);
+    Call<Object> getOrder(@Query("api_key") String api_key, @Query("auth_nonce") String auth_nonce, @Query("auth_sign") String auth_sign,
+                          @Query("pair") String pair, @Query("type") String type, @Query("order_type") String order_type, @Query("price") String price,
+                          @Query("amount") String amount, @Query("money") String money, @Query("stop_price") String stop_price);
 
     @POST("bb/api/cancel/order")
     Call<Object> cancleOrder(@Query("api_key") String api_key, @Query("auth_nonce") String auth_nonce, @Query("auth_key") String auth_key, @Query("auth_sign") String auth_sign,
