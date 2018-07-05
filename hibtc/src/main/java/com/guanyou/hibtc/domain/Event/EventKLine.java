@@ -16,14 +16,15 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventKLine extends Event {
+
     @JsonProperty("data")
     List<KLine> data;
 
-    List<KLine> getData() {
+    public List<KLine> getData() {
         return data;
     }
 
-    void setData(List<KLine> data) {
+    public void setData(List<KLine> data) {
         this.data = data;
     }
 
