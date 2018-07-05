@@ -31,7 +31,7 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
     @Override
     public EventTicker getTicker(String pair) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getTicker(pair)));//EventTicker.class
-        EventTicker eventTicker = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventTicker.class);
+        EventTicker eventTicker = JSONObject.parseObject(js.toJSONString(), EventTicker.class);
         return eventTicker;
 
     }
@@ -39,18 +39,17 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
     @Override
     public EventDepth getOrderBook(String pair, int depth, int prec) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOrderBook(pair, depth, prec)));
-        EventDepth eventDepth = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventDepth.class);
+        EventDepth eventDepth = JSONObject.parseObject(js.toJSONString(), EventDepth.class);
         return eventDepth;
     }
 
     @Override
     public EventKLine getKLine(String pair, String type, long time_start, long time_end) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getKLine(pair, type, time_start, time_end)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildKline(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventKLine eventKLine = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventKLine.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        EventKLine eventKLine = JSONObject.parseObject(js.toJSONString(), EventKLine.class);
         return eventKLine;
     }
 
@@ -58,11 +57,10 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
     @Override
     public EventTrade getTrade(String pair, int last) {
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getTrade(pair, last)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildTrade(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventTrade eventTrade = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventTrade.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        EventTrade eventTrade = JSONObject.parseObject(js.toJSONString(), EventTrade.class);
         return eventTrade;
     }
 
@@ -88,11 +86,11 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String apiSecret = authInfo.getApiSecret();
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOderList(api_key, auth_nonce, auth_key, auth_sign)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildOrder(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventOrder eventOrder = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventOrder.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        EventOrder eventOrder = JSONObject.parseObject(js.toJSONString(), EventOrder.class);
         return eventOrder;
     }
 
@@ -105,11 +103,10 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String apiSecret = authInfo.getApiSecret();
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getHistoryOrders(api_key, auth_nonce, auth_key, auth_sign, page_size, page_index)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildOrder(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        HisListOrder eventOrder = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), HisListOrder.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        HisListOrder eventOrder = JSONObject.parseObject(js.toJSONString(), HisListOrder.class);
         return eventOrder;
     }
 
@@ -121,11 +118,10 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String apiSecret = authInfo.getApiSecret();
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getTradeList(api_key, auth_nonce, auth_key, auth_sign, last)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildHisTrade(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        EventListTrade eventListTrade = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventListTrade.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        EventListTrade eventListTrade = JSONObject.parseObject(js.toJSONString(), EventListTrade.class);
         return eventListTrade;
     }
 
@@ -137,11 +133,10 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String apiSecret = authInfo.getApiSecret();
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getHistoryTrades(api_key, auth_nonce, auth_key, auth_sign, page_size, page_index)));
-        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
         JSONArray jsonArra1 = buildJSON.buildHisTrade(dataArray);
-        data.put(HibtcApiConstants.JSON_DATA, jsonArra1);
-        HisListTrade eventListTrade = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), HisListTrade.class);
+        js.put(HibtcApiConstants.JSON_DATA, jsonArra1);
+        HisListTrade eventListTrade = JSONObject.parseObject(js.toJSONString(), HisListTrade.class);
         return eventListTrade;
     }
 
@@ -154,7 +149,7 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String apiSecret = authInfo.getApiSecret();
         String auth_sign = MD5coding.MD5(auth_nonce + auth_key + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getWalletBalance(api_key, auth_nonce, auth_key, auth_sign)));
-        EventWallet eventWallet = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), EventWallet.class);
+        EventWallet eventWallet = JSONObject.parseObject(js.toJSONString(), EventWallet.class);
         return eventWallet;
     }
 
@@ -198,7 +193,7 @@ public class HibtcApiRestClientImpl implements HibtcApiRestClient {
         String api_key = authInfo.getApi_key();
         String auth_nonce = authInfo.getAuth_nonce();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + type + order_type + price + amount + money + stop_price + apiSecret);
+        String auth_sign = MD5coding.MD5(amount + api_key + auth_nonce + money + order_type + pair + price + stop_price + type + apiSecret);
         JSONObject js = (JSONObject) JSONObject.toJSON(service.executeSync(HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, type, order_type, price, amount, money, stop_price)));
         OrderResponse orderResponse = JSONObject.parseObject(js.getString(HibtcApiConstants.JSON_DATA), OrderResponse.class);
         return orderResponse;

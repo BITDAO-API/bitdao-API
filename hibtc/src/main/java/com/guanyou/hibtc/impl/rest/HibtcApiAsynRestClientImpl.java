@@ -12,7 +12,7 @@ import com.guanyou.hibtc.ws.HibtcApiCallback;
  * @Modified by:
  */
 public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
-    private final com.guanyou.hibtc.impl.rest.HibtcApiService HibtcApiService;
+    private final HibtcApiService HibtcApiService;
 
     public HibtcApiAsynRestClientImpl(HibtcApiServiceGenerator hibtcApiServiceGenerator) {
 
@@ -106,7 +106,7 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
         String auth_nonce = authInfo.getAuth_nonce();
         String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "buy" + "LIMIT" + price + amount + "0" + "0" + apiSecret);
+        String auth_sign = MD5coding.MD5(amount + api_key + auth_nonce + "0" + "LIMIT" + pair + price + "0" + "buy" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "buy", "LIMIT", price, amount, "0", "0").enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 
@@ -116,7 +116,7 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
         String auth_nonce = authInfo.getAuth_nonce();
         String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "sell" + "LIMIT" + price + amount + "0" + "0" + apiSecret);
+        String auth_sign = MD5coding.MD5(amount + api_key + auth_nonce + "0" + "LIMIT" + pair + price + "0" + "sell" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "sell", "LIMIT", price, amount, "0", "0").enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 
@@ -126,7 +126,7 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
         String auth_nonce = authInfo.getAuth_nonce();
         String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "buy" + "MARKET" + "0" + "0" + money + "0" + apiSecret);
+        String auth_sign = MD5coding.MD5("0" + api_key + auth_nonce + money + "MARKET" + pair + "0" + "0" + "buy" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "buy", "MARKET", "0", "0", money, "0").enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 
@@ -136,7 +136,7 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
         String auth_nonce = authInfo.getAuth_nonce();
         String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "sell" + "MARKET" + "0" + "0" + money + "0" + apiSecret);
+        String auth_sign = MD5coding.MD5("0" + api_key + auth_nonce + money + "MARKET" + pair + "0" + "0" + "sell" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "sell", "MARKET", "0", "0", money, "0").enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 
@@ -146,7 +146,7 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
         String auth_nonce = authInfo.getAuth_nonce();
         String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "buy" + "STOP" + price + amount + "0" + stop_price + apiSecret);
+        String auth_sign = MD5coding.MD5(amount + api_key + auth_nonce + "0" + "STOP" + pair + price + stop_price + "buy" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "buy", "STOP", price, amount, "0", stop_price).enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 
@@ -154,9 +154,8 @@ public class HibtcApiAsynRestClientImpl implements HibtcApiAsynRestClient {
     public void makeStopSellOrder(AuthInfo authInfo, String pair, String price, String amount, String stop_price, HibtcApiCallback<Object> callback) {
         String api_key = authInfo.getApi_key();
         String auth_nonce = authInfo.getAuth_nonce();
-        String auth_key = authInfo.getAuth_key();
         String apiSecret = authInfo.getApiSecret();
-        String auth_sign = MD5coding.MD5(api_key + auth_nonce + pair + "sell" + "STOP" + price + amount + "0" + stop_price + apiSecret);
+        String auth_sign = MD5coding.MD5(amount + api_key + auth_nonce + "0" + "STOP" + pair + price + stop_price + "sell" + apiSecret);
         HibtcApiService.getOrder(api_key, auth_nonce, auth_sign, pair, "sell", "STOP", price, amount, "0", stop_price).enqueue(new HibtcApiCallbackAdapter<>(callback));
     }
 }

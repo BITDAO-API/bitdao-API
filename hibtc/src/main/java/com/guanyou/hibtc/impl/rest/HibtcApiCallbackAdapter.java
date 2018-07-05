@@ -39,7 +39,6 @@ public class HibtcApiCallbackAdapter<T> implements Callback<T> {
             String channel = null;
             try {
                 js = (JSONObject) JSONObject.toJSON(response.body());
-                JSONObject jsData = (JSONObject) JSONObject.parse(js.getString("data"));
                 outChannel = js.getString(HibtcApiConstants.JSON_CHINNEL);
                 if (outChannel == null) {
                     HibtcApiError error = new HibtcApiError();
@@ -47,7 +46,7 @@ public class HibtcApiCallbackAdapter<T> implements Callback<T> {
                     error.setCode(Integer.parseInt(js.getString("Code")) == -2 ? Integer.parseInt(js.getString("Code")) : -1);
                     throw new HibtcApiException(error);
                 }
-                channel = (jsData.getString(HibtcApiConstants.JSON_CHINNEL));
+                channel = (js.getString(HibtcApiConstants.JSON_CHINNEL));
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new HibtcApiException(e);
@@ -55,58 +54,52 @@ public class HibtcApiCallbackAdapter<T> implements Callback<T> {
             if ("0".equals(js.getString("code"))) {
                 try {
                     if (HibtcApiConstants.TICKER.equalsIgnoreCase(channel)) {
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventTicker>() {
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventTicker>() {
                         });
 
                     } else if (HibtcApiConstants.DEPTH.equalsIgnoreCase(channel)) {
 
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventDepth>() {
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventDepth>() {
                         });
                     } else if (HibtcApiConstants.TRADE.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildTrade(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventTrade>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventTrade>() {
                         });
                     } else if (HibtcApiConstants.KLINE.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildKline(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventKLine>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventKLine>() {
                         });
                     } else if (HibtcApiConstants.AUTH_TRADE.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildHisTrade(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventListTrade>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventListTrade>() {
                         });
                     } else if (HibtcApiConstants.AUTH_ORDER.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildOrder(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventOrder>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventOrder>() {
                         });
                     } else if (HibtcApiConstants.AUTH_WALLET.equalsIgnoreCase(channel)) {
 
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<EventWallet>() {
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<EventWallet>() {
                         });
                     } else if (HibtcApiConstants.AUTH_HIS_TRADES.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildHisTrade(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<HisListTrade>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<HisListTrade>() {
                         });
                     } else if (HibtcApiConstants.AUTH_HIS_ORDERS.equalsIgnoreCase(channel)) {
-                        JSONObject data = (JSONObject) JSONObject.toJSON(js.get(HibtcApiConstants.JSON_DATA));
-                        List<String[]> dataArray = JSONObject.parseArray(data.getString(HibtcApiConstants.JSON_DATA), String[].class);
+                        List<String[]> dataArray = JSONObject.parseArray(js.getString(HibtcApiConstants.JSON_DATA), String[].class);
                         JSONArray jsonArra = buildJSON.buildOrder(dataArray);
-                        data.put(HibtcApiConstants.JSON_DATA, jsonArra);
-                        event = mapper.readValue(js.getString(HibtcApiConstants.JSON_DATA), new TypeReference<HisListOrder>() {
+                        js.put(HibtcApiConstants.JSON_DATA, jsonArra);
+                        event = mapper.readValue(js.toJSONString(), new TypeReference<HisListOrder>() {
                         });
                     } else if (HibtcApiConstants.AUTH_MAKE_ORDER.equalsIgnoreCase(channel)) {
 
